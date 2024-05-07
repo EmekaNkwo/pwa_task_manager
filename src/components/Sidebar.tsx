@@ -72,6 +72,7 @@ const Sidebar = (): JSX.Element => {
                                     <Menu.Item
                                         key={item.key}
                                         icon={item.icon}
+                                        disabled={item.disabled}
                                     >
                                         <span className="sidebar_style">{item.title}</span>
                                     </Menu.Item>
@@ -113,6 +114,7 @@ const Sidebar = (): JSX.Element => {
                                     <Menu.Item
                                         key={item.key}
                                         icon={item.icon}
+                                        disabled={item.disabled}
                                     >
                                         <span className="sidebar_style">{item.title}</span>
                                     </Menu.Item>

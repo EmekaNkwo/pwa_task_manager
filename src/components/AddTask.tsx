@@ -1,6 +1,9 @@
-import React, { Dispatch, SetStateAction, useState } from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { FiPlus } from 'react-icons/fi'
 import { Task } from './TaskCards'
+import { useCreateTaskMutation } from '@/redux/api/taskApi'
+import { message } from 'antd'
+import localforage from 'localforage'
 
 interface AddTaskProps {
     column: string
@@ -10,18 +13,46 @@ const AddTask = ({ column, setItems }: AddTaskProps) => {
     const [text, setText] = useState("")
     const [adding, setAdding] = useState(false)
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const [createTask, { isLoading, isSuccess, isError }] = useCreateTaskMutation()
+
+
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        if (!text.trim().length) return
+        if (!text.trim().length) return message.error("Task cannot be empty")
         const newCard = {
             column,
             title: text.trim(),
             id: Math.random().toString()
         }
-        setItems((prevItems) => [...prevItems, newCard])
-        setText("")
-        setAdding(false)
+        await createTask(newCard)
     }
+
+    useEffect(() => {
+        const handleOnlineEvent = async () => {
+            const pendingTask = await localforage.getItem('createPendingTask');
+            if (pendingTask) {
+                await createTask(pendingTask);
+                await localforage.removeItem('createPendingTask');
+            }
+        };
+
+        window.addEventListener('online', handleOnlineEvent);
+
+        return () => {
+            window.removeEventListener('online', handleOnlineEvent);
+        };
+    }, []);
+
+    useEffect(() => {
+        if (isSuccess) {
+            message.success("Task added successfully")
+            setText("")
+            setAdding(false)
+        } else if (isError) {
+            message.error("Failed to add task")
+        }
+    }, [isSuccess, isError])
     return (
         <>{
             adding ? <>
@@ -34,7 +65,9 @@ const AddTask = ({ column, setItems }: AddTaskProps) => {
                     </div>
                 </form>
             </> : <button className='flex w-full items-center gap-1.5 px-3 py-1.5 text-xs text-neutral-400 transition-colors hover:text-neutral-50' onClick={() => setAdding(true)}>
-                <span>Add Task </span> <FiPlus />
+                {
+                    isLoading ? "Adding..." : <> <span>Add Task </span> <FiPlus /></>
+                }
             </button>
         }</>
     )

@@ -1,13 +1,17 @@
 "use client"
-import React, { Dispatch, SetStateAction, useState } from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import TaskCard from './TaskCard'
 import DropIndicator from './DropIndicator'
 import AddTask from './AddTask'
+import { useUpdateTaskMutation } from '@/redux/api/taskApi'
+import { message } from 'antd'
+import localforage from 'localforage'
 
 export interface Task {
     title: string
     id: string
     column: string
+    _id: string
 }
 
 interface TaskCardsProps {
@@ -18,11 +22,49 @@ interface TaskCardsProps {
     setTasks: Dispatch<SetStateAction<Array<Task>>>
 }
 const TaskCards = ({ title, headingColor, column, tasks, setTasks }: TaskCardsProps) => {
+
     const [active, setActive] = useState(false)
     const filtererdTasks = tasks?.filter((task) => task?.column === column)
+    const [updateTask, { isSuccess, isError }] = useUpdateTaskMutation()
+
+    const onHandleTaskUpdate = async (task: Record<string, unknown>) => {
+        // Update the task in the database when the user is online or offline
+        if (navigator.onLine) {
+            message.info("Back Online")
+            await updateTask({ data: task });
+        } else {
+            // Save the request locally
+            await localforage.setItem('pendingTask', task);
+        }
+    }
+
+    useEffect(() => {
+        const handleOnlineEvent = async () => {
+            const pendingTask = await localforage.getItem('pendingTask');
+            if (pendingTask) {
+                await updateTask({ data: pendingTask });
+                await localforage.removeItem('pendingTask');
+            }
+        };
+
+        window.addEventListener('online', handleOnlineEvent);
+
+        return () => {
+            window.removeEventListener('online', handleOnlineEvent);
+        };
+    }, []);
+
+    useEffect(() => {
+        if (isSuccess) {
+            message.success("Task updated successfully")
+        } else if (isError) {
+            message.error("Failed to update task")
+        }
+    }, [isSuccess, isError])
 
     const handleDragStart = (e: React.DragEvent<HTMLDivElement>, card: Record<string, any>) => {
         e.dataTransfer.setData("cardId", card.id)
+        e.dataTransfer.setData("card", JSON.stringify(card)) // Serialize the card object to a string
     }
 
     const getIndicators = () => {
@@ -78,11 +120,20 @@ const TaskCards = ({ title, headingColor, column, tasks, setTasks }: TaskCardsPr
         setActive(false)
         clearIndicators()
         const cardId = e.dataTransfer.getData("cardId")
+        const cardString = e.dataTransfer.getData("card") // Retrieve the card object as a string
+        const card = cardString ? JSON.parse(cardString) : null
+
         const indicators = getIndicators()
         const { element } = getNearestIndicator(e, indicators)
 
 
         const before = element.dataset.before || "-1"
+        const movedToColumn = element.dataset.column
+
+        onHandleTaskUpdate({
+            _id: card._id as string,
+            column: movedToColumn as string,
+        });
 
         if (before !== cardId) {
             let copy = [...tasks]
@@ -107,8 +158,6 @@ const TaskCards = ({ title, headingColor, column, tasks, setTasks }: TaskCardsPr
         }
     }
 
-
-
     return (
         <div className=' shrink-0'>
             <div className="mb-3 flex items-center justify-between">
@@ -118,11 +167,13 @@ const TaskCards = ({ title, headingColor, column, tasks, setTasks }: TaskCardsPr
             <div onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDragEnd} className={`h-full rounded-md w-full transition-colors ${active ? "bg-neutral-800/50" : "bg-neutral-800"}`}>
                 {filtererdTasks.map(
                     (task) => (
-                        <TaskCard key={task?.id} title={task?.title} id={task?.id} column={task?.column} handleDragStart={handleDragStart} />
+                        <TaskCard key={task?.id} task={task} handleDragStart={handleDragStart} />
                     )
                 )}
                 <DropIndicator beforeId="-1" column={column} />
-                <AddTask column={column} setItems={setTasks || []} />
+                {
+                    column === "done" ? null : <AddTask column={column} setItems={setTasks || []} />
+                }
             </div>
 
         </div>

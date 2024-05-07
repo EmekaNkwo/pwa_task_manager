@@ -5,13 +5,16 @@ import { Avatar, Dropdown, Space } from "antd";
 import { FiLogOut } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { signOut } from "@/util/supabase/action";
 
 const TopBar = () => {
     const router = useRouter()
 
 
     const handleLogout = async () => {
-        console.log("logout")
+        signOut().then(() => {
+            router.push("/");
+        })
     };
     return (
         <div className="flex h-[70px] gap-2 justify-between items-center p-2 shadow-sm">

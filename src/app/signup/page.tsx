@@ -1,24 +1,26 @@
 "use client";
+import { useState, useEffect, FormEventHandler } from "react";
 
 import { FcGoogle } from "react-icons/fc";
+
 import { useRouter } from "next/navigation";
+
+
 import { Form, FormProps, message } from "antd";
 import { AppRoutes } from "@/shared/routes/AppRoutes";
 import { CheckboxField, InputField, PasswordField } from "@/shared/ui/InputField";
 import { CustomButton } from "@/shared/ui/CustomButtons";
-import { login } from "@/util/supabase/action";
-
+import { signup } from "@/util/supabase/action";
 
 type FieldType = {
     email?: string;
     password?: string;
-    remember?: string;
+    confirmPassword?: string;
 };
 
 
-const Login = () => {
+const SignUp = () => {
     const { push } = useRouter();
-
     const onHandleGoogleLogin = async () => {
 
     };
@@ -27,20 +29,19 @@ const Login = () => {
         formData.append('email', values.email ?? '');
         formData.append('password', values.password ?? '');
 
-        const { error, data } = await login(formData);
+        const { error, data } = await signup(formData);
         if (error) {
-            message.error(error?.message); // Display the error message
+            message.error(error?.message);
         } else {
-            message.success('Login successful');
-            sessionStorage.setItem('task_token', data?.session?.access_token ?? '');
-            push(AppRoutes.Activity)
+            message.success('Signup successful');
+            push(AppRoutes.Login)
         }
     };
 
     return (
         <>
             <div className="flex flex-col gap-y-4 items-center justify-center w-full bg-whiteColor h-screen">
-                <h3 className="text-[32px] mt-2 font-medium text-baseColor">Welcome back</h3>
+                <h3 className="text-[32px] mt-2 font-medium text-baseColor">Lets get started</h3>
                 <div
                     onClick={onHandleGoogleLogin}
                     className="p-2 rounded-md flex items-center bg-whiteColor justify-center gap-2 shadow-md mt-4 cursor-pointer"
@@ -53,7 +54,7 @@ const Login = () => {
 
                     onFinish={onHandleEmailLogin}
                     layout="vertical"
-                    className="mt-[2rem]"
+                    className="l mt-[2rem]"
                 >
                     <Form.Item<FieldType>
                         label="Email"
@@ -75,22 +76,21 @@ const Login = () => {
                         />
                     </Form.Item>
                     <Form.Item<FieldType>
-                        name="remember"
-                        valuePropName="checked"
-
-
-
+                        label="ConfirmPassword"
+                        name="confirmPassword"
+                        rules={[{ required: true, message: 'Confirm your password!' }]}
                     >
-                        <CheckboxField title="Remember me" />
-                    </Form.Item>
+                        <PasswordField
+                            size="large"
 
+                        />
+                    </Form.Item>
                     <Form.Item >
                         <CustomButton
                             variant="Filled"
-                            title="Log in"
+                            title="Sign Up"
                             className="bg-[#0F376A] w-full text-whiteColor mt-2"
                             type="submit"
-
 
                         />
                     </Form.Item>
@@ -98,12 +98,12 @@ const Login = () => {
 
                 </Form>
                 <span className="mt-4">
-                    Not Registered?{" "}
+                    Already registered?{" "}
                     <b
                         className="text-baseColor cursor-pointer"
-                        onClick={() => push(AppRoutes.Signup)}
+                        onClick={() => push(AppRoutes.Login)}
                     >
-                        Sign Up
+                        Login
                     </b>
                 </span>
             </div>
@@ -111,4 +111,4 @@ const Login = () => {
     );
 };
 
-export default Login;
+export default SignUp;

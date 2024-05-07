@@ -15,21 +15,25 @@ export const topSidebarItems = [
         key: "/activity",
         icon: <MdDashboard {...style} />,
         title: "Activity",
+        disabled: false
     },
     {
         key: "/projects",
         icon: <AiOutlineProject {...style} />,
         title: "Projects",
+        disabled: true
     },
     {
         key: "/updates",
         icon: <FaRegClock {...style} />,
         title: "All Updates",
+        disabled: true
     },
     {
         key: "/settings",
         icon: <IoMdSettings {...style} />,
         title: "Settings",
+        disabled: true
     },
 ];
 
@@ -39,11 +43,13 @@ export const bottomSidebarItems = [
         key: "/profile",
         icon: <FaRegUserCircle {...style} />,
         title: "Profile",
+        disabled: true
     },
     {
         key: "/notifications",
         icon: <IoNotificationsSharp {...style} />,
         title: "Notifications",
+        disabled: true
     },
 
 ];
