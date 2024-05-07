@@ -94,7 +94,6 @@ export async function PATCH(req: Request) {
             headers: { "Content-Type": "application/json" }
         });
     } catch (error) {
-        console.log(error);
         return new NextResponse(JSON.stringify({
             status: "failed",
             message: "Error updating task"
@@ -142,7 +141,6 @@ export async function DELETE(req: Request) {
             headers: { "Content-Type": "application/json" }
         });
     } catch (error) {
-        console.log(error);
         return new NextResponse(JSON.stringify({
             status: "failed",
             message: "Error deleting task"
