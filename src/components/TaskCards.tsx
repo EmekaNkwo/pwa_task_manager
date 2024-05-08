@@ -6,6 +6,8 @@ import AddTask from './AddTask'
 import { useUpdateTaskMutation } from '@/redux/api/taskApi'
 import { message } from 'antd'
 import localforage from 'localforage'
+import { useAppDispatch, useAppSelector } from '@/redux/hooks'
+import { CLEAR_PENDING_TASK_UPDATE, SET_PENDING_TASKS_UPDATE } from '@/redux/slice/pendingTaskSlice'
 
 export interface Task {
     title: string
@@ -22,25 +24,37 @@ interface TaskCardsProps {
     setTasks: Dispatch<SetStateAction<Array<Task>>>
 }
 const TaskCards = ({ title, headingColor, column, tasks, setTasks }: TaskCardsProps) => {
-
+    const dispatch = useAppDispatch()
+    const savedPendingTasks = useAppSelector((state) => state.pendingUpdate.pending)
     const [active, setActive] = useState(false)
     const filtererdTasks = tasks?.filter((task) => task?.column === column)
     const [updateTask, { isSuccess, isError }] = useUpdateTaskMutation()
 
+
+    const pendingTask = localforage.getItem('pendingTask');
+
     const onHandleTaskUpdate = async (task: Record<string, unknown>) => {
-        // Update the task in the database when the user is online or offline
+
         if (navigator.onLine) {
-            message.info("Back Online")
             await updateTask({ data: task });
         } else {
-            // Save the request locally
             await localforage.setItem('pendingTask', task);
+
         }
     }
+    //Todo: Fix the OFfline Sync Issue
 
     useEffect(() => {
         const handleOnlineEvent = async () => {
-            const pendingTask = await localforage.getItem('pendingTask');
+
+
+            // if (savedPendingTasks?.length > 0) {
+            //     console.log("I am here");
+
+            //     for (const task of savedPendingTasks) {
+            //         await updateTask({ data: task });
+            //     }
+            // }
             if (pendingTask) {
                 await updateTask({ data: pendingTask });
                 await localforage.removeItem('pendingTask');
@@ -59,6 +73,7 @@ const TaskCards = ({ title, headingColor, column, tasks, setTasks }: TaskCardsPr
             message.success("Task updated successfully")
         } else if (isError) {
             message.error("Failed to update task")
+
         }
     }, [isSuccess, isError])
 
@@ -159,12 +174,12 @@ const TaskCards = ({ title, headingColor, column, tasks, setTasks }: TaskCardsPr
     }
 
     return (
-        <div className=' shrink-0'>
+        <div className={`mt-4 lg:mt-0 `}>
             <div className="mb-3 flex items-center justify-between">
                 <h3 className={`font-medium ${headingColor}`}>{title}</h3>
                 <span className={"rounded text-sm text-neutral-400"}>{filtererdTasks?.length}</span>
             </div>
-            <div onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDragEnd} className={`h-full rounded-md w-full transition-colors ${active ? "bg-neutral-800/50" : "bg-neutral-800"}`}>
+            <div onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDragEnd} className={`rounded-md ${filtererdTasks.length > 0 ? "p-1.5" : "p-1"} w-full transition-colors ${column === "done" ? "min-h-[50px]" : ""} max-h-[400px] lg:max-h-[70vh] overflow-y-auto  ${active ? "bg-neutral-800/50" : "bg-neutral-800"}`}>
                 {filtererdTasks.map(
                     (task) => (
                         <TaskCard key={task?.id} task={task} handleDragStart={handleDragStart} />

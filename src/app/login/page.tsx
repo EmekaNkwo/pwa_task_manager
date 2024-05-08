@@ -7,6 +7,9 @@ import { AppRoutes } from "@/shared/routes/AppRoutes";
 import { CheckboxField, InputField, PasswordField } from "@/shared/ui/InputField";
 import { CustomButton } from "@/shared/ui/CustomButtons";
 import { login } from "@/util/supabase/action";
+import { useEffect } from "react";
+import { useAppDispatch } from "@/redux/hooks";
+import { CLEAR_PENDING_TASK_UPDATE } from "@/redux/slice/pendingTaskSlice";
 
 
 type FieldType = {
@@ -15,9 +18,13 @@ type FieldType = {
     remember?: string;
 };
 
-
 const Login = () => {
     const { push } = useRouter();
+    const dispatch = useAppDispatch()
+
+    useEffect(() => {
+        dispatch(CLEAR_PENDING_TASK_UPDATE());
+    }, [])
 
     const onHandleGoogleLogin = async () => {
 

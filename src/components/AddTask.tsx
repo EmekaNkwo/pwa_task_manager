@@ -14,18 +14,23 @@ const AddTask = ({ column, setItems }: AddTaskProps) => {
     const [adding, setAdding] = useState(false)
 
     const [createTask, { isLoading, isSuccess, isError }] = useCreateTaskMutation()
-
-
-
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         if (!text.trim().length) return message.error("Task cannot be empty")
+
         const newCard = {
             column,
             title: text.trim(),
             id: Math.random().toString()
         }
-        await createTask(newCard)
+
+        if (navigator.onLine) {
+            await createTask(newCard)
+        } else {
+            await localforage.setItem('createPendingTask', newCard);
+            setItems((prev) => ([...prev, { ...newCard, _id: newCard.id }]))
+        }
+
     }
 
     useEffect(() => {

@@ -10,8 +10,12 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.2",
+    "@serwist/next": "^9.0.2",
+    "@serwist/precaching": "^9.0.2",
+    "@serwist/sw": "^9.0.2",
     "@supabase/ssr": "^0.3.0",
     "@supabase/supabase-js": "^2.42.4",
+    "@types/redux-persist": "^4.3.1",
     "antd": "^5.15.4",
     "framer-motion": "^11.0.28",
     "jose": "^5.2.4",
@@ -20,10 +24,12 @@
     "mongodb": "^6.5.0",
     "mongoose": "^8.3.2",
     "next": "14.1.4",
+    "next-pwa": "^5.6.0",
     "react": "^18",
     "react-dom": "^18",
     "react-icons": "^5.0.1",
-    "react-redux": "^9.1.0"
+    "react-redux": "^9.1.0",
+    "redux-persist": "^6.0.0"
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.6",

@@ -9,9 +9,9 @@ const template = ({ children }: { children: React.ReactNode }) => {
     return (
         <>
             <div className="flex items-start ">
-                <>
+                <div className="hidden lg:flex" >
                     <Sidebar />
-                </>
+                </div>
                 <div className="flex flex-col w-full">
                     <Topbar />
                     <div className="p-2">
