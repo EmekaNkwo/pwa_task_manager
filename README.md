@@ -7,6 +7,5 @@ This is a Full Stack PWA [Progressive Web Application] App for managing tasks. T
 - User Authentication with Email and Password
 - Offline access to tasks and data
 - Background synchronization for updating data when online [In Progress]
-- Push notification for task reminders and updates [In Progress]
 - Responsive design for consistent experience
 - Ability to install on users' device for native like experience [In Progress]
