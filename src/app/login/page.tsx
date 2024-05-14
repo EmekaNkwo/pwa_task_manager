@@ -1,12 +1,11 @@
 "use client";
 
-import { FcGoogle } from "react-icons/fc";
 import { useRouter } from "next/navigation";
 import { Form, FormProps, message } from "antd";
 import { AppRoutes } from "@/shared/routes/AppRoutes";
 import { CheckboxField, InputField, PasswordField } from "@/shared/ui/InputField";
 import { CustomButton } from "@/shared/ui/CustomButtons";
-import { login } from "@/util/supabase/action";
+import { login, loginWithGoogle } from "@/util/supabase/action";
 import { useEffect } from "react";
 import { useAppDispatch } from "@/redux/hooks";
 import { CLEAR_PENDING_TASK_UPDATE } from "@/redux/slice/pendingTaskSlice";
@@ -26,9 +25,21 @@ const Login = () => {
         dispatch(CLEAR_PENDING_TASK_UPDATE());
     }, [])
 
-    const onHandleGoogleLogin = async () => {
+    // Implement later
+    // const onHandleGoogleLogin = async () => {
 
-    };
+
+    //     const { error, data } = await loginWithGoogle();
+    //     console.log(data);
+    //     if (error) {
+    //         message.error(error?.message); // Display the error message
+    //     } else {
+    //         message.success('Login successful');
+    //         // sessionStorage.setItem('task_token');
+    //         push(AppRoutes.Activity)
+    //     }
+    //     push(data?.url ?? "")
+    // };
     const onHandleEmailLogin: FormProps<FieldType>['onFinish'] = async (values) => {
         const formData = new FormData();
         formData.append('email', values.email ?? '');
@@ -48,13 +59,13 @@ const Login = () => {
         <>
             <div className="flex flex-col gap-y-4 items-center justify-center w-full bg-whiteColor h-screen">
                 <h3 className="text-[32px] mt-2 font-medium text-baseColor">Welcome back</h3>
-                <div
+                {/* <div
                     onClick={onHandleGoogleLogin}
                     className="p-2 rounded-md flex items-center bg-whiteColor justify-center gap-2 shadow-md mt-4 cursor-pointer"
                 >
                     <FcGoogle className="text-[2.2rem]" />
                     <span className="text-primaryColor">Continue with Google</span>
-                </div>
+                </div> */}
 
                 <Form
 

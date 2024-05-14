@@ -21,9 +21,9 @@ type FieldType = {
 
 const SignUp = () => {
     const { push } = useRouter();
-    const onHandleGoogleLogin = async () => {
+    // const onHandleGoogleLogin = async () => {
 
-    };
+    // };
     const onHandleEmailLogin: FormProps<FieldType>['onFinish'] = async (values) => {
         const formData = new FormData();
         formData.append('email', values.email ?? '');
@@ -42,13 +42,13 @@ const SignUp = () => {
         <>
             <div className="flex flex-col gap-y-4 items-center justify-center w-full bg-whiteColor h-screen">
                 <h3 className="text-[32px] mt-2 font-medium text-baseColor">Lets get started</h3>
-                <div
+                {/* <div
                     onClick={onHandleGoogleLogin}
                     className="p-2 rounded-md flex items-center bg-whiteColor justify-center gap-2 shadow-md mt-4 cursor-pointer"
                 >
                     <FcGoogle className="text-[2.2rem]" />
                     <span className="text-primaryColor">Continue with Google</span>
-                </div>
+                </div> */}
 
                 <Form
 

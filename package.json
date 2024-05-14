@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@redux-offline/redux-offline": "^2.6.0",
     "@reduxjs/toolkit": "^2.2.2",
     "@serwist/next": "^9.0.2",
     "@serwist/precaching": "^9.0.2",

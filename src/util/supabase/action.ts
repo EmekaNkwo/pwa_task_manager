@@ -43,6 +43,28 @@ export async function signup(formData: FormData) {
     return { data: data ? { ...data } : null };
 }
 
+export async function loginWithGoogle() {
+    const supabase = createClient()
+    const { error, data } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+            redirectTo: 'http://localhost:3000',
+            queryParams: { prompt: 'consent', access_type: 'offline' },
+        }
+    })
+    if (error) {
+        // Convert the error into a plain object
+        return { error: { message: error?.message } };
+    }
+    // Ensure data is also a plain object or null if not applicable
+    return { data: data ? { ...data } : null };
+}
+
+export async function signUpWithGoogle() {
+    const supabase = createClient()
+
+}
+
 export async function signOut() {
     const supabase = createClient()
     return await supabase.auth.signOut()

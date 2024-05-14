@@ -1,11 +1,15 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { authApi } from "./api/authApi";
 import { taskApi } from "./api/taskApi";
+import offlineConfig from '@redux-offline/redux-offline/lib/defaults';
+import { offline } from '@redux-offline/redux-offline';
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import pendingTaskUpdateSlice from "./slice/pendingTaskSlice";
+import localforage from "localforage";
 
+offlineConfig.persistOptions = { storage: localforage };
 const rootReducer = combineReducers({
     pendingUpdate: pendingTaskUpdateSlice,
     [authApi.reducerPath]: authApi.reducer,
