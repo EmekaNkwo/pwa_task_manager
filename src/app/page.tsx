@@ -1,11 +1,18 @@
-import Image from "next/image";
-import Dashboard from "./(dashboardWrapper)/activity/page";
-import Login from "./login/page";
+"use client";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { AppRoutes } from "@/shared/routes/AppRoutes";
+import { Spin } from "antd";
 
 export default function Home() {
+  const router = useRouter()
+  useEffect(() => {
+    router.push(AppRoutes.Activity)
+  }, [])
   return (
     <main >
-      <Login />
+
+      <Spin className="flex items-center justify-center my-[2rem]" />
     </main>
   );
 }
