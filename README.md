@@ -1,4 +1,8 @@
-PWA TASK MANAGEMENT - https://pwa-tsk-manager.netlify.app/
+# PWA TASK MANAGEMENT - https://pwa-tsk-manager.netlify.app/
+
+## Login Credentials
+test@test.com
+test001
 
 This is a Full Stack PWA [Progressive Web Application] App for managing tasks. This is built with Next.js, TailwindCSS, Ant Design, Redux Toolkit, Framer Motion, Supabase, and MongoDB.
 
