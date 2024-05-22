@@ -41,6 +41,7 @@ const TopBar = () => {
                     <div className="flex items-center gap-2 ">
                         <Space size="middle">
                             <Dropdown
+                                disabled
                                 placement="bottom"
                                 menu={{
                                     items: [
